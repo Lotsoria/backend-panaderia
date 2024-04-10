@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model customers {
+  id             Int              @id @default(autoincrement())
+  dpi            String?          @db.VarChar(60)
+  nit            String?          @db.VarChar(50)
+  name           String?          @db.VarChar(100)
+  last_name      String?          @db.VarChar(100)
+  phone          String?          @db.VarChar(45)
+  email          String?          @db.VarChar(100)
+  status         Int?             @db.TinyInt
+  createdAt      DateTime?        @db.Timestamp(0)
+  updatedAt      DateTime?        @db.Timestamp(0)
+  sales_invoices sales_invoices[]
+}
+
+model employees {
+  id             Int              @id @default(autoincrement())
+  dpi            String?          @db.VarChar(60)
+  name           String?          @db.VarChar(100)
+  last_name      String?          @db.VarChar(100)
+  phone          String?          @db.VarChar(45)
+  email          String?          @db.VarChar(100)
+  status         Int?             @db.TinyInt
+  createdAt      DateTime?        @db.Timestamp(0)
+  updatedAt      DateTime?        @db.Timestamp(0)
+  sales_invoices sales_invoices[]
+}
+
+model products {
+  id                       Int                        @id @default(autoincrement())
+  name                     String?                    @db.VarChar(45)
+  description              String?                    @db.VarChar(255)
+  status                   Int?                       @db.TinyInt
+  price                    Decimal?                   @db.Decimal(10, 2)
+  stock                    Int?
+  updatedAt                DateTime?                  @db.Timestamp(0)
+  createdAt                DateTime?                  @db.Timestamp(0)
+  purchase_invoice_details purchase_invoice_details[]
+  sales_invoice_details    sales_invoice_details[]
+}
+
+model purchase_invoice_details {
+  id                   Int               @id @default(autoincrement())
+  createdAt            DateTime?         @db.Timestamp(0)
+  updatedAt            DateTime?         @db.Timestamp(0)
+  products_id          Int
+  lot                  Int?
+  purchase_invoices_id Int
+  products             products          @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_invoice_details_products")
+  purchase_invoices    purchase_invoices @relation(fields: [purchase_invoices_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_invoice_details_purchase_invoices1")
+
+  @@index([products_id], map: "fk_purchase_invoice_details_products_idx")
+  @@index([purchase_invoices_id], map: "fk_purchase_invoice_details_purchase_invoices1_idx")
+}
+
+model purchase_invoices {
+  id                       Int                        @id @default(autoincrement())
+  supplier                 String?                    @db.VarChar(100)
+  createdAt                DateTime?                  @db.Timestamp(0)
+  updatedAt                DateTime?                  @db.Timestamp(0)
+  purchase_invoice_details purchase_invoice_details[]
+}
+
+model sales_invoice_details {
+  id                Int            @id @default(autoincrement())
+  createdAt         DateTime?      @db.Timestamp(0)
+  updatedAt         DateTime?      @db.Timestamp(0)
+  products_id       Int
+  lot               Int?
+  sales_invoices_id Int
+  products          products       @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sales_invoice_details_products1")
+  sales_invoices    sales_invoices @relation(fields: [sales_invoices_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sales_invoice_details_sales_invoices1")
+
+  @@index([products_id], map: "fk_sales_invoice_details_products1_idx")
+  @@index([sales_invoices_id], map: "fk_sales_invoice_details_sales_invoices1_idx")
+}
+
+model sales_invoices {
+  id                    Int                     @id @default(autoincrement())
+  total_amout           Decimal?                @db.Decimal(10, 2)
+  customers_id          Int
+  employees_id          Int
+  sales_invoice_details sales_invoice_details[]
+  customers             customers               @relation(fields: [customers_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sales_invoices_customers1")
+  employees             employees               @relation(fields: [employees_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sales_invoices_employees1")
+
+  @@index([customers_id], map: "fk_sales_invoices_customers1_idx")
+  @@index([employees_id], map: "fk_sales_invoices_employees1_idx")
+}

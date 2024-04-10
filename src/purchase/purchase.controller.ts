@@ -1,0 +1,17 @@
+import { Body, Controller, Post } from '@nestjs/common';
+import { PurchaseService } from './purchase.service';
+
+@Controller('purchase')
+export class PurchaseController {
+
+    constructor(
+        private purchaseService: PurchaseService
+    ) {};
+
+
+    @Post('create')
+    async purchaseInvoice(@Body() data: any) {
+        return await this.purchaseService.purchaseInvoice(data);
+    } 
+
+}
