@@ -38,6 +38,7 @@ model products {
   id                       Int                        @id @default(autoincrement())
   name                     String?                    @db.VarChar(45)
   description              String?                    @db.VarChar(255)
+  image_url                String?                    @db.VarChar(255)
   status                   Int?                       @db.TinyInt
   price                    Decimal?                   @db.Decimal(10, 2)
   stock                    Int?
@@ -66,6 +67,7 @@ model purchase_invoices {
   supplier                 String?                    @db.VarChar(100)
   createdAt                DateTime?                  @db.Timestamp(0)
   updatedAt                DateTime?                  @db.Timestamp(0)
+  status                   Int?                       @db.TinyInt
   purchase_invoice_details purchase_invoice_details[]
 }
 
@@ -88,6 +90,9 @@ model sales_invoices {
   total_amout           Decimal?                @db.Decimal(10, 2)
   customers_id          Int
   employees_id          Int
+  createdAt             DateTime?               @db.Timestamp(0)
+  updatedAt             DateTime?               @db.Timestamp(0)
+  status                Int?                    @db.TinyInt
   sales_invoice_details sales_invoice_details[]
   customers             customers               @relation(fields: [customers_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sales_invoices_customers1")
   employees             employees               @relation(fields: [employees_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sales_invoices_employees1")

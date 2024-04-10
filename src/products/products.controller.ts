@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProduct, UpdateProduct } from 'src/dto/products.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
@@ -17,8 +18,12 @@ export class ProductsController {
   }
 
   @Post('create')
-  async createProduct(@Body() dataProduct: CreateProduct) {
-    return await this.productsService.createProduct(dataProduct);
+  @UseInterceptors(FileInterceptor('image', ProductsService.getMulterOptions()))
+  async createProduct(
+    @Body() dataProduct: CreateProduct,
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<any> {
+    return await this.productsService.createProduct(dataProduct, image);
   }
 
   @Put('update/:id')

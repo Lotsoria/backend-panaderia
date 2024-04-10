@@ -4,6 +4,7 @@ export class CreateProduct {
     description: string;
     price: string;
     stock: string;
+    image_url: string;
 }
 
 export class UpdateProduct{
@@ -11,6 +12,7 @@ export class UpdateProduct{
     description?: string;
     price?: number;
     stock?: number;
+    image_url?: string;
     status?: number;
     updatedAt?: Date;
 }
