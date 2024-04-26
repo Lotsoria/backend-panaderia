@@ -23,15 +23,19 @@ export class ProductsController {
     @Body() dataProduct: CreateProduct,
     @UploadedFile() image: Express.Multer.File,
   ): Promise<any> {
+    console.log(dataProduct, image);
     return await this.productsService.createProduct(dataProduct, image);
   }
 
   @Put('update/:id')
+  @UseInterceptors(FileInterceptor('image', ProductsService.getMulterOptions()))
   async updateProduct(
     @Body() dataProduct: UpdateProduct,
     @Param('id') id: number,
+    @UploadedFile() image: Express.Multer.File,
   ) {
-    return await this.productsService.updateProduct(dataProduct, id);
+    console.log(dataProduct, id, image)
+    return await this.productsService.updateProduct(dataProduct, id, image);
   }
 
   @Put('delete/:id')

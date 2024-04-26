@@ -11,8 +11,8 @@ export class UpdateProduct{
     name?: string;
     description?: string;
     price?: number;
-    stock?: number;
+    stock?:  number ;
     image_url?: string;
     status?: number;
     updatedAt?: Date;
-}
+} 

@@ -45,6 +45,7 @@ export class CustumersService {
         data: {
           nit: body.nit,
           name: body.name,
+          dpi: body.dpi,
           last_name: body.last_name,
           phone: body.phone,
           email: body.email,

@@ -13,7 +13,7 @@ export class EmployeesService {
       const data = await this.prisma.employees.findMany({
         where: {
           NOT: {
-            status: Number(env.DELETE),
+            status: Number(env.DELETED),
           },
         },
       });
@@ -31,7 +31,7 @@ export class EmployeesService {
         where: {
           id: Number(id),
           NOT: {
-            status: Number(env.DELETE),
+            status: Number(env.DELETED),
           },
         },
       });
@@ -91,7 +91,7 @@ export class EmployeesService {
           id: Number(id),
         },
         data: {
-          status: Number(env.DELETE),
+          status: Number(env.DELETED),
           updatedAt: new Date(),
         },
       });

@@ -13,6 +13,7 @@ export class SalesController {
 
     @Post('create')
     async salesInvoice(@Body() data: any) {
+        console.log(data);
         return await this.salesService.salesInvoice(data);
     } 
     

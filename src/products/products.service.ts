@@ -17,7 +17,7 @@ export class ProductsService {
       const data = await this.prisma.products.findMany({
         where: {
           NOT: {
-            status: Number(env.DELETE),
+            status: Number(env.DELETED),
           },
         },
       });
@@ -34,7 +34,7 @@ export class ProductsService {
         where: {
           id: Number(id),
           NOT: {
-            status: Number(env.DELETE),
+            status: Number(env.DELETED),
           },
         },
       });
@@ -66,15 +66,19 @@ export class ProductsService {
 
       return 'Registro creado correctamente ' + toJson(data);
     } catch (error) {
+      console.log(error);
       return error;
     }
   }
 
   //TODO: Funcion para actualizar un producto
-  async updateProduct(dataProduct: UpdateProduct, id: number) {
+  async updateProduct(dataProduct: UpdateProduct, id: number, imageFile?: Express.Multer.File) {
+    const imageUrl = imageFile ? `http://localhost:3000/uploads/${imageFile.filename}` : dataProduct.image_url;
     try {
       const dataUpdate: UpdateProduct = {
         ...dataProduct,
+        stock: Number(dataProduct.stock),
+        image_url: imageUrl,
         updatedAt: new Date(),
       };
       const data = await this.prisma.products.update({
@@ -85,22 +89,25 @@ export class ProductsService {
       });
       return 'Registro actualizado correctamente ' + toJson(data);
     } catch (error) {
+      console.log(error)
       return error;
     }
   }
 
   //TODO: Funcion para eliminar un producto
   async deleteProduct(id: number) {
+    console.log(id);
     try {
       const data = await this.prisma.products.update({
         where: {
           id: Number(id),
         },
         data: {
-          status: Number(env.DELETE),
+          status: Number(env.DELETED),
           updatedAt: new Date(),
         },
       });
+      console.log(data);
       return 'Registro eliminado correctamente ' + toJson(data);
     } catch (error) {
       return error;

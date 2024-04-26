@@ -31,51 +31,64 @@ export class SalesService {
       const result = await this.prisma.$transaction(async (prisma) => {
         const dataSales = await prisma.sales_invoices.create({
           data: {
-            customers_id: data.customers_id,
-            employees_id: data.employees_id,
+            customers_id: Number(data.customers_id),
+            employees_id: Number(data.employees_id),
             createdAt: new Date(),
           },
         });
         let total = 0;
         for (const product of data.products) {
-          await prisma.sales_invoice_details.create({
-            data: {
-              products_id: product.products_id,
-              lot: product.lot,
-              sales_invoices_id: dataSales.id,
-              createdAt: new Date(),
+          const productStock = await prisma.products.findUnique({
+            where: {
+              id: Number(product.products_id),
             },
           });
 
-          const productFind = await prisma.products.findUnique({
-            where: {
-              id: product.products_id,
-            },
-          });
-          productFind.stock -= product.lot;
-          total += Number(productFind.price) * product.lot;
-          await prisma.products.update({
-            where: {
-              id: product.products_id,
-            },
-            data: {
-              stock: productFind.stock,
-            },
-          });
+          if (productStock.stock < product.lot) {
+            return (
+              'No hay suficiente stock para el producto ' + productStock.name
+            );
+          } else {
+            await prisma.sales_invoice_details.create({
+              data: {
+                products_id: Number(product.products_id),
+                lot: Number(product.lot),
+                sales_invoices_id: dataSales.id,
+                createdAt: new Date(),
+              },
+            });
+
+            const productFind = await prisma.products.findUnique({
+              where: {
+                id: Number(product.products_id),
+              },
+            });
+            productFind.stock -= product.lot;
+            total += Number(productFind.price) * product.lot;
+            await prisma.products.update({
+              where: {
+                id: Number(product.products_id),
+              },
+              data: {
+                stock: Number(productFind.stock),
+              },
+            });
+          }
         }
         const updateTotalAmout = await prisma.sales_invoices.update({
-            where: {
-                id: dataSales.id,
-            },
-            data: {
-                total_amout: total,
-            },
-            });
-        return 'Venta realizada con éxito ' + total + ' $';
+          where: {
+            id: Number(dataSales.id),
+          },
+          data: {
+            total_amout: total,
+          },
+        });
+        return total;
       });
 
       return result;
     } catch (error) {
+      console.log(error);
       return error;
     }
   }

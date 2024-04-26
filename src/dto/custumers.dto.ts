@@ -1,5 +1,6 @@
 export class CreateCustomers {
     nit: string;
+    dpi: string;
     name: string;
     last_name: string;
     phone: string;
@@ -9,6 +10,7 @@ export class CreateCustomers {
 export class UpdatedCustomer {
     nit?: string;
     name?: string;
+    dpi?: string;
     last_name?: string;
     phone?: string;
     email?: string;
