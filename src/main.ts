@@ -7,7 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: [
+   	 'http://panaderia-dev.s3-website.us-east-2.amazonaws.com', // Frontend en S3
+    	 'http://localhost:3000' // Localhost para pruebas locales
+  	],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
   });
