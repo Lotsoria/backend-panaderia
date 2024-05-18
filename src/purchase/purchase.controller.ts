@@ -1,6 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('purchase')
 @Controller('purchase')
 export class PurchaseController {
 

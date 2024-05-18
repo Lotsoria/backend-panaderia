@@ -2,7 +2,8 @@ import { Body, Controller, Get, Param, Post, Put, UploadedFile, UseInterceptors 
 import { ProductsService } from './products.service';
 import { CreateProduct, UpdateProduct } from 'src/dto/products.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
